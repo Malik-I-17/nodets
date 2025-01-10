@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Page Title</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *;**script-src 'self' https://dev-cc-apigateway.dreamstechnologies.com 'unsafe-inline' 'unsafe-eval';** ">
+  </head>
+  <body>
+
+    <h1>This is a Heading</h1>
+    <p>This is a paragraph.</p>
+    <button id="upvote-btn"> Upvote </button>
+
+  </body>
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>
+  <script>
+    var socket = io();
+    var btn = document.getElementById('upvote-btn');
+    var upvote_val = false;
+
+    // socket.on("connection", (socket) => {
+    //     alert('test')
+    //     socket.on("kafkaMessage", (payload, callback) => {
+    //         console.log(payload)
+    //     });
+    // });
+
+    // client-side
+    socket
+      .connect()
+      .on("connect", () => {
+        console.log(socket.id); // x8WIv7-mJelg7on_ALbx
+        socket.on("CC_notify", (payload, callback) => {
+          console.log(payload);
+        });
+      });
+
+    socket.on("disconnect", () => {
+      console.log(socket.id); // undefined
+    });
+
+    btn.addEventListener('click', function (e) {
+      e.preventDefault(); // prevent page reloading
+
+      upvote_val = upvote_val
+        ? false
+        : true;
+
+      socket.emit('CC_notify', upvote_val);
+    });
+  </script>
+</html>
